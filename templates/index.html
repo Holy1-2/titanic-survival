@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Titanic Survival Predictor</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     * {
       margin: 0;
@@ -13,7 +14,7 @@
 
     body {
       font-family: 'Montserrat', sans-serif;
-      background: #0a0a0a;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
       color: #ffffff;
       min-height: 100vh;
       display: flex;
@@ -22,43 +23,176 @@
       justify-content: center;
       padding: 40px 20px;
       line-height: 1.6;
+      overflow-x: hidden;
     }
 
     .container {
-      max-width: 500px;
+      max-width: 1200px;
       width: 100%;
       margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 40px;
+    }
+
+    .header {
       text-align: center;
+      margin-bottom: 20px;
     }
 
-    h2 {
-      color: #ffffff;
-      margin-bottom: 30px;
-      font-size: 2rem;
-      font-weight: 600;
+    .header h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      background: linear-gradient(to right, #ffffff, #cccccc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
-    form {
-      background: #111111;
-      display: inline-block;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.5);
-      border: 1px solid #333333;
+    .header p {
+      font-size: 1.2rem;
+      color: #aaaaaa;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .content {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 40px;
       width: 100%;
-      max-width: 400px;
+    }
+
+    .form-container {
+      flex: 1;
+      min-width: 350px;
+      max-width: 600px;
+    }
+
+    .visualization {
+      flex: 1;
+      min-width: 350px;
+      max-width: 500px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .onboarding-card {
+      background: rgba(17, 17, 17, 0.8);
+      backdrop-filter: blur(10px);
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      width: 100%;
+    }
+
+    .step-indicator {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 40px;
+      position: relative;
+    }
+
+    .step-indicator::before {
+      content: '';
+      position: absolute;
+      top: 20px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.2);
+      z-index: 1;
+    }
+
+    .step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .step-circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .step.active .step-circle {
+      background: rgba(255, 255, 255, 0.9);
+      border-color: rgba(255, 255, 255, 0.9);
+      color: #0a0a0a;
+    }
+
+    .step.completed .step-circle {
+      background: rgba(76, 175, 80, 0.9);
+      border-color: rgba(76, 175, 80, 0.9);
+    }
+
+    .step-label {
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .step.active .step-label {
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .step-content {
+      display: none;
+    }
+
+    .step-content.active {
+      display: block;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .step-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: #ffffff;
+    }
+
+    .step-description {
+      color: #cccccc;
+      margin-bottom: 30px;
+      font-size: 1rem;
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #cccccc;
     }
 
     input, select {
-      margin: 10px;
-      padding: 12px;
-      width: 90%;
-      background: #1a1a1a;
-      border: 1px solid #333333;
-      border-radius: 6px;
+      width: 100%;
+      padding: 15px;
+      background: rgba(26, 26, 26, 0.8);
+      border: 1px solid rgba(51, 51, 51, 0.8);
+      border-radius: 10px;
       color: #ffffff;
       font-family: 'Montserrat', sans-serif;
-      font-size: 0.95rem;
+      font-size: 1rem;
+      transition: all 0.3s ease;
     }
 
     input::placeholder {
@@ -67,104 +201,710 @@
 
     input:focus, select:focus {
       outline: none;
-      border-color: #ffffff;
+      border-color: rgba(255, 255, 255, 0.5);
+      box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
     }
 
-    button {
-      background: #ffffff;
-      color: #0a0a0a;
-      padding: 12px 24px;
+    .nav-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+      padding: 12px 20px;
       border: none;
-      border-radius: 6px;
+      border-radius: 10px;
       cursor: pointer;
       font-family: 'Montserrat', sans-serif;
-      font-weight: 600;
+      font-weight: 500;
       font-size: 1rem;
-      margin-top: 10px;
-      width: 90%;
       transition: all 0.3s ease;
     }
 
-    button:hover {
-      background: #e0e0e0;
+    .nav-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
       transform: translateY(-2px);
     }
 
-    .result {
-      margin-top: 25px;
-      padding: 20px;
-      background: #111111;
-      border-radius: 12px;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.5);
-      border: 1px solid #333333;
-      max-width: 400px;
-      width: 100%;
-      display: none;
+    .nav-btn.next {
+      background: rgba(255, 255, 255, 0.9);
+      color: #0a0a0a;
     }
 
-    .result.show {
+    .nav-btn.next:hover {
+      background: rgba(255, 255, 255, 1);
+    }
+
+    .nav-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .nav-btn:disabled:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: none;
+    }
+
+    .navigation-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 40px;
+    }
+
+    .ocean-container {
+      width: 100%;
+      height: 300px;
+      position: relative;
+      margin-bottom: 30px;
+      overflow: hidden;
+      border-radius: 15px;
+      background: linear-gradient(to bottom, #0a192f 0%, #0a0a2a 100%);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+    }
+
+    .ocean {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 80px;
+      background: linear-gradient(to bottom, transparent 0%, rgba(10, 25, 47, 0.8) 100%);
+    }
+
+    .wave {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 200%;
+      height: 100%;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z' opacity='.25' fill='%23000'/%3E%3Cpath d='M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z' opacity='.5' fill='%23000'/%3E%3Cpath d='M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z' fill='%23000'/%3E%3C/svg%3E");
+      background-size: 50% 100%;
+      animation: wave 10s linear infinite;
+    }
+
+    @keyframes wave {
+      0% { transform: translateX(0); }
+      50% { transform: translateX(-25%); }
+      100% { transform: translateX(-50%); }
+    }
+
+    .boat {
+      position: absolute;
+      bottom: 50px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 60px;
+      background: url('./static/boat.png') no-repeat center;
+      background-size: contain;
+      animation: boatFloat 4s ease-in-out infinite;
+      z-index: 10;
+    }
+
+    /* Fallback boat using CSS if image not found */
+    .boat::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        linear-gradient(to bottom, #ffffff 0%, #ffffff 100%),
+        linear-gradient(to bottom, #333333 0%, #333333 100%);
+      background-size: 80% 40%, 20% 60%;
+      background-position: center, top center;
+      background-repeat: no-repeat;
+      border-radius: 5px;
+      display: none; /* Hide by default, show if image fails */
+    }
+
+    .boat.image-failed::after {
+      display: block;
+    }
+
+    @keyframes boatFloat {
+      0%, 100% { transform: translateX(-50%) translateY(0) rotate(0deg); }
+      25% { transform: translateX(-50%) translateY(-5px) rotate(1deg); }
+      50% { transform: translateX(-50%) translateY(0) rotate(0deg); }
+      75% { transform: translateX(-50%) translateY(-3px) rotate(-1deg); }
+    }
+
+    .result-card {
+      background: rgba(17, 17, 17, 0.8);
+      backdrop-filter: blur(10px);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      max-width: 500px;
+      width: 100%;
+      display: none;
+      text-align: center;
+    }
+
+    .result-card.show {
       display: block;
       animation: fadeIn 0.5s ease;
     }
 
-    .result h3 {
-      color: #ffffff;
+    .result-title {
       font-size: 1.4rem;
-      margin-bottom: 10px;
+      margin-bottom: 20px;
+      color: #ffffff;
+    }
+
+    .result-value {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 20px;
     }
 
     .survived {
       color: #4CAF50;
-      font-weight: 700;
     }
 
     .not-survived {
       color: #f44336;
-      font-weight: 700;
+    }
+
+    .result-description {
+      color: #cccccc;
+      font-size: 1rem;
+      margin-top: 15px;
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
+      from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    @media (max-width: 480px) {
-      form {
-        padding: 20px;
+    .stats {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+      gap: 15px;
+    }
+
+    .stat-card {
+      background: rgba(26, 26, 26, 0.6);
+      padding: 20px;
+      border-radius: 15px;
+      text-align: center;
+      flex: 1;
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: #aaaaaa;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 15px;
+      margin-top: 30px;
+    }
+
+    .action-btn {
+      flex: 1;
+      padding: 15px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .new-prediction {
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+    }
+
+    .new-prediction:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .close-btn {
+      background: rgba(255, 255, 255, 0.9);
+      color: #0a0a0a;
+    }
+
+    .close-btn:hover {
+      background: rgba(255, 255, 255, 1);
+    }
+
+    .loading {
+      display: none;
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .loading-spinner {
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top: 4px solid #ffffff;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 15px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .error-message {
+      background: rgba(244, 67, 54, 0.2);
+      border: 1px solid rgba(244, 67, 54, 0.5);
+      color: #f44336;
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 20px;
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      .content {
+        flex-direction: column;
+        align-items: center;
       }
       
-      input, select, button {
-        width: 95%;
+      .form-container, .visualization {
+        max-width: 100%;
+      }
+      
+      .header h1 {
+        font-size: 2.5rem;
+      }
+      
+      .stats {
+        flex-direction: column;
+      }
+      
+      .action-buttons {
+        flex-direction: column;
       }
     }
   </style>
 </head>
 <body>
+  <div class="container">
+    <div class="header">
+      <h1>Titanic Survival Predictor</h1>
+      <p>Enter passenger details to predict survival chances on the Titanic's fateful voyage</p>
+    </div>
+    
+    <div class="content">
+      <div class="form-container">
+        <div class="onboarding-card">
+          <!-- Step Indicator -->
+          <div class="step-indicator">
+            <div class="step active" data-step="1">
+              <div class="step-circle">1</div>
+              <div class="step-label">Personal</div>
+            </div>
+            <div class="step" data-step="2">
+              <div class="step-circle">2</div>
+              <div class="step-label">Family</div>
+            </div>
+            <div class="step" data-step="3">
+              <div class="step-circle">3</div>
+              <div class="step-label">Travel</div>
+            </div>
+            <div class="step" data-step="4">
+              <div class="step-circle">4</div>
+              <div class="step-label">Result</div>
+            </div>
+          </div>
+          
+          <!-- Step 1: Personal Details -->
+          <div class="step-content active" id="step-1">
+            <h2 class="step-title">Personal Details</h2>
+            <p class="step-description">Tell us about the passenger's personal characteristics that might affect survival chances.</p>
+            
+            <div class="form-group">
+              <label class="form-label" for="pclass">Passenger Class</label>
+              <select id="pclass" name="pclass" required>
+                <option value="" disabled selected>Select Class</option>
+                <option value="1">First Class</option>
+                <option value="2">Second Class</option>
+                <option value="3">Third Class</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label" for="sex">Gender</label>
+              <select id="sex" name="sex" required>
+                <option value="" disabled selected>Select Gender</option>
+                <option value="0">Male</option>
+                <option value="1">Female</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label" for="age">Age</label>
+              <input type="number" id="age" name="age" placeholder="Enter age" min="0" max="100" required>
+            </div>
+            
+            <div class="navigation-buttons">
+              <button class="nav-btn prev" disabled>
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+                Previous
+              </button>
+              <button class="nav-btn next" data-next="2">
+                Next
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+          
+          <!-- Step 2: Family Details -->
+          <div class="step-content" id="step-2">
+            <h2 class="step-title">Family Details</h2>
+            <p class="step-description">Information about family members traveling with the passenger.</p>
+            
+            <div class="form-group">
+              <label class="form-label" for="sibsp">Siblings/Spouses Aboard</label>
+              <input type="number" id="sibsp" name="sibsp" placeholder="Enter number" min="0" max="10" required>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label" for="parch">Parents/Children Aboard</label>
+              <input type="number" id="parch" name="parch" placeholder="Enter number" min="0" max="10" required>
+            </div>
+            
+            <div class="navigation-buttons">
+              <button class="nav-btn prev" data-prev="1">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+                Previous
+              </button>
+              <button class="nav-btn next" data-next="3">
+                Next
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+          
+          <!-- Step 3: Travel Details -->
+          <div class="step-content" id="step-3">
+            <h2 class="step-title">Travel Details</h2>
+            <p class="step-description">Information about the passenger's ticket and embarkation point.</p>
+            
+            <div class="form-group">
+              <label class="form-label" for="fare">Ticket Fare (£)</label>
+              <input type="number" step="any" id="fare" name="fare" placeholder="Enter fare amount" min="0" max="600" required>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label" for="embarked">Port of Embarkation</label>
+              <select id="embarked" name="embarked" required>
+                <option value="" disabled selected>Select Port</option>
+                <option value="0">Southampton (S)</option>
+                <option value="1">Cherbourg (C)</option>
+                <option value="2">Queenstown (Q)</option>
+              </select>
+            </div>
+            
+            <div class="loading" id="loading">
+              <div class="loading-spinner"></div>
+              <p>Analyzing passenger data with our prediction model...</p>
+            </div>
+            
+            <div class="error-message" id="error-message">
+              There was an error processing your request. Please try again.
+            </div>
+            
+            <div class="navigation-buttons">
+              <button class="nav-btn prev" data-prev="2">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+                Previous
+              </button>
+              <button class="nav-btn next" id="predict-btn">
+                Predict Survival
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+          
+          <!-- Step 4: Results -->
+          <div class="step-content" id="step-4">
+            <h2 class="step-title">Prediction Result</h2>
+            <p class="step-description">Based on the information provided, here's the survival prediction:</p>
+            
+            <div class="result-value" id="result-value">Calculating...</div>
+            <p class="result-description" id="result-description"></p>
+            
+            <div class="stats">
+              <div class="stat-card">
+                <div class="stat-value">24%</div>
+                <div class="stat-label">Men Survived</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value">74%</div>
+                <div class="stat-label">Women Survived</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value">62%</div>
+                <div class="stat-label">1st Class Survived</div>
+              </div>
+            </div>
+            
+            <div class="action-buttons">
+              <button class="action-btn new-prediction" id="new-prediction">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                </svg>
+                New Prediction
+              </button>
+              <button class="action-btn close-btn" id="close-btn">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="visualization">
+        <div class="ocean-container">
+          <div class="boat" id="boat"></div>
+          <div class="wave"></div>
+          <div class="ocean"></div>
+        </div>
+        
+        <div class="result-card" id="static-result-card">
+          <h3 class="result-title">Historical Statistics</h3>
+          <p class="result-description">Actual survival rates from the Titanic disaster:</p>
+          
+          <div class="stats">
+            <div class="stat-card">
+              <div class="stat-value">24%</div>
+              <div class="stat-label">Men Survived</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">74%</div>
+              <div class="stat-label">Women Survived</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">62%</div>
+              <div class="stat-label">1st Class Survived</div>
+            </div>
+          </div>
+          
+          <div class="stats">
+            <div class="stat-card">
+              <div class="stat-value">41%</div>
+              <div class="stat-label">2nd Class Survived</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">25%</div>
+              <div class="stat-label">3rd Class Survived</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">50%</div>
+              <div class="stat-label">Children Survived</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-  <h2>Titanic Survival Prediction</h2>
-
-  <form method="POST" action="/predict">
-    <input type="number" name="pclass" placeholder="Passenger Class (1-3)" required><br>
-    <select name="sex">
-      <option value="0">Male</option>
-      <option value="1">Female</option>
-    </select><br>
-    <input type="number" step="any" name="age" placeholder="Age" required><br>
-    <input type="number" name="sibsp" placeholder="Siblings/Spouses" required><br>
-    <input type="number" name="parch" placeholder="Parents/Children" required><br>
-    <input type="number" step="any" name="fare" placeholder="Fare" required><br>
-    <select name="embarked">
-      <option value="0">Southampton (S)</option>
-      <option value="1">Cherbourg (C)</option>
-      <option value="2">Queenstown (Q)</option>
-    </select><br>
-
-    <button type="submit">Predict</button>
-  </form>
-
-  {% if result %}
-    <h3>{{ result }}</h3>
-  {% endif %}
-
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Step navigation
+      const steps = document.querySelectorAll('.step');
+      const stepContents = document.querySelectorAll('.step-content');
+      const nextButtons = document.querySelectorAll('.nav-btn.next');
+      const prevButtons = document.querySelectorAll('.nav-btn.prev');
+      const predictButton = document.getElementById('predict-btn');
+      const newPredictionButton = document.getElementById('new-prediction');
+      const closeButton = document.getElementById('close-btn');
+      const resultValue = document.getElementById('result-value');
+      const resultDescription = document.getElementById('result-description');
+      const loadingElement = document.getElementById('loading');
+      const errorMessage = document.getElementById('error-message');
+      const boatElement = document.getElementById('boat');
+      
+      // Check if boat image loaded successfully
+      boatElement.onerror = function() {
+        this.classList.add('image-failed');
+      };
+      
+      // Initialize with step 1 active
+      let currentStep = 1;
+      
+      // Next button functionality
+      nextButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          if (this.id === 'predict-btn') {
+            // Make API call to Flask backend
+            makePrediction();
+          } else {
+            const nextStep = parseInt(this.getAttribute('data-next'));
+            navigateToStep(nextStep);
+          }
+        });
+      });
+      
+      // Previous button functionality
+      prevButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          const prevStep = parseInt(this.getAttribute('data-prev'));
+          navigateToStep(prevStep);
+        });
+      });
+      
+      // New Prediction button
+      newPredictionButton.addEventListener('click', function() {
+        // Reset form and go back to step 1
+        document.getElementById('pclass').selectedIndex = 0;
+        document.getElementById('sex').selectedIndex = 0;
+        document.getElementById('age').value = '';
+        document.getElementById('sibsp').value = '';
+        document.getElementById('parch').value = '';
+        document.getElementById('fare').value = '';
+        document.getElementById('embarked').selectedIndex = 0;
+        
+        // Hide error message
+        errorMessage.style.display = 'none';
+        
+        navigateToStep(1);
+      });
+      
+      // Close button
+      closeButton.addEventListener('click', function() {
+        alert('Thank you for using the Titanic Survival Predictor!');
+      });
+      
+      // Function to navigate between steps
+      function navigateToStep(stepNumber) {
+        // Update step indicators
+        steps.forEach(step => {
+          const stepNum = parseInt(step.getAttribute('data-step'));
+          step.classList.remove('active', 'completed');
+          
+          if (stepNum === stepNumber) {
+            step.classList.add('active');
+          } else if (stepNum < stepNumber) {
+            step.classList.add('completed');
+          }
+        });
+        
+        // Update step content visibility
+        stepContents.forEach(content => {
+          content.classList.remove('active');
+          if (content.id === `step-${stepNumber}`) {
+            content.classList.add('active');
+          }
+        });
+        
+        currentStep = stepNumber;
+      }
+      
+      // Function to make API call to Flask backend
+      async function makePrediction() {
+        // Show loading state
+        loadingElement.style.display = 'block';
+        errorMessage.style.display = 'none';
+        
+        // Get form values
+        const pclass = document.getElementById('pclass').value;
+        const sex = document.getElementById('sex').value;
+        const age = document.getElementById('age').value;
+        const sibsp = document.getElementById('sibsp').value;
+        const parch = document.getElementById('parch').value;
+        const fare = document.getElementById('fare').value;
+        const embarked = document.getElementById('embarked').value;
+        
+        // Validate all fields are filled
+        if (!pclass || !sex || !age || !sibsp || !parch || !fare || !embarked) {
+          errorMessage.textContent = 'Please fill in all fields before predicting.';
+          errorMessage.style.display = 'block';
+          loadingElement.style.display = 'none';
+          return;
+        }
+        
+        // Prepare data for API
+        const formData = {
+          pclass: parseInt(pclass),
+          sex: parseInt(sex),
+          age: parseFloat(age),
+          sibsp: parseInt(sibsp),
+          parch: parseInt(parch),
+          fare: parseFloat(fare),
+          embarked: parseInt(embarked)
+        };
+        
+        try {
+          // Make API call to Flask backend
+          const response = await fetch('/predict', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
+          });
+          
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Network response was not ok');
+          }
+          
+          const data = await response.json();
+          
+          // Hide loading state
+          loadingElement.style.display = 'none';
+          
+          // Display result
+          resultValue.textContent = data.survived ? 'SURVIVED' : 'DID NOT SURVIVE';
+          resultValue.className = data.survived ? 'result-value survived' : 'result-value not-survived';
+          
+          if (data.survived) {
+            resultDescription.textContent = `Based on the provided information, this passenger would have likely survived the Titanic disaster.`;
+          } else {
+            resultDescription.textContent = `Based on the provided information, this passenger would have likely not survived the Titanic disaster.`;
+          }
+          
+          // Navigate to results step
+          navigateToStep(4);
+        } catch (error) {
+          // Hide loading state and show error
+          loadingElement.style.display = 'none';
+          errorMessage.textContent = `Error: ${error.message}`;
+          errorMessage.style.display = 'block';
+          console.error('Error making prediction:', error);
+        }
+      }
+    });
+  </script>
 </body>
 </html>
